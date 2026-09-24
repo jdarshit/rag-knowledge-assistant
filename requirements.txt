@@ -1,0 +1,7 @@
+pypdf
+langchain-core
+langchain-text-splitters
+langchain-huggingface
+sentence-transformers
+langchain-chroma
+langchain-ollama
