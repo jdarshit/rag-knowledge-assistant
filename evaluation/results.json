@@ -1,0 +1,80 @@
+{
+  "total_questions": 8,
+  "retrieval_accuracy": 1.0,
+  "correct_not_found_rate": 1.0,
+  "average_response_time_seconds": 56.3,
+  "results": [
+    {
+      "question": "What is BERT?",
+      "answer": "BERT\u2019s model architecture is a multi-layer bidirectional Transformer encoder based on the original implementation described in Vaswani et al. (2017) and released in the tensor2tensor library.",
+      "expected_source": "bert.pdf",
+      "should_find": true,
+      "answered": true,
+      "retrieval_correct": true,
+      "seconds": 148.1
+    },
+    {
+      "question": "How many attention heads does the base Transformer model use?",
+      "answer": "I could not find this in the documents.",
+      "expected_source": "sample.pdf",
+      "should_find": true,
+      "answered": false,
+      "retrieval_correct": true,
+      "seconds": 75.2
+    },
+    {
+      "question": "What is multi-head attention?",
+      "answer": "Multi-Head Attention = Concat(head 1,..., headh)W O\nwhere headi = Attention(QW Q\ni ,KW K\ni ,VW V\ni )\nWhere the projections are parameter matricesW Q\ni \u2208 Rdmodel\u00d7dk,W K\ni \u2208 Rdmodel\u00d7dk,W V\ni \u2208 Rdmodel\u00d7dv\nandW O\u2208 Rhdv\u00d7dmodel.",
+      "expected_source": "sample.pdf",
+      "should_find": true,
+      "answered": true,
+      "retrieval_correct": true,
+      "seconds": 71.3
+    },
+    {
+      "question": "How many parameters does BERT-large have?",
+      "answer": "340M parameters.",
+      "expected_source": "bert.pdf",
+      "should_find": true,
+      "answered": true,
+      "retrieval_correct": true,
+      "seconds": 64.6
+    },
+    {
+      "question": "What datasets was BERT pre-trained on?",
+      "answer": "I could not find this in the documents.",
+      "expected_source": "bert.pdf",
+      "should_find": true,
+      "answered": false,
+      "retrieval_correct": true,
+      "seconds": 63.8
+    },
+    {
+      "question": "Who is the prime minister of India?",
+      "answer": "I could not find this in the documents.",
+      "expected_source": null,
+      "should_find": false,
+      "answered": false,
+      "retrieval_correct": null,
+      "seconds": 2.6
+    },
+    {
+      "question": "What is the capital of France?",
+      "answer": "I could not find this in the documents.",
+      "expected_source": null,
+      "should_find": false,
+      "answered": false,
+      "retrieval_correct": null,
+      "seconds": 2.2
+    },
+    {
+      "question": "Explain convolutional neural networks in detail",
+      "answer": "I could not find this in the documents.",
+      "expected_source": null,
+      "should_find": false,
+      "answered": false,
+      "retrieval_correct": null,
+      "seconds": 22.6
+    }
+  ]
+}

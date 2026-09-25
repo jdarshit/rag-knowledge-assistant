@@ -1,0 +1,42 @@
+[
+  {
+    "question": "What is BERT?",
+    "expected_source": "bert.pdf",
+    "should_find": true
+  },
+  {
+    "question": "How many attention heads does the base Transformer model use?",
+    "expected_source": "sample.pdf",
+    "should_find": true
+  },
+  {
+    "question": "What is multi-head attention?",
+    "expected_source": "sample.pdf",
+    "should_find": true
+  },
+  {
+    "question": "How many parameters does BERT-large have?",
+    "expected_source": "bert.pdf",
+    "should_find": true
+  },
+  {
+    "question": "What datasets was BERT pre-trained on?",
+    "expected_source": "bert.pdf",
+    "should_find": true
+  },
+  {
+    "question": "Who is the prime minister of India?",
+    "expected_source": null,
+    "should_find": false
+  },
+  {
+    "question": "What is the capital of France?",
+    "expected_source": null,
+    "should_find": false
+  },
+  {
+    "question": "Explain convolutional neural networks in detail",
+    "expected_source": null,
+    "should_find": false
+  }
+]
