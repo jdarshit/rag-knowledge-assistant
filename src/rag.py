@@ -3,14 +3,11 @@ from functools import lru_cache
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
 
+from src.config import LLM_MODEL, MAX_DISTANCE, RERANK_TOP_N, TOP_K
 from src.query_rewriter import condense_question
 from src.reranker import rerank
 from src.vector_store import get_vector_store
 
-LLM_MODEL = "llama3.2:3b"
-TOP_K = 8
-RERANK_TOP_N = 4
-MAX_DISTANCE = 0.70
 MIN_RERANK_SCORE = 0.0
 NOT_FOUND = "I could not find this in the documents."
 

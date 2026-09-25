@@ -1,11 +1,13 @@
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
+from src.config import CHUNK_OVERLAP, CHUNK_SIZE
+
 
 def chunk_pages(
     pages: list[dict],
-    chunk_size: int = 800,
-    chunk_overlap: int = 150,
+    chunk_size: int = CHUNK_SIZE,
+    chunk_overlap: int = CHUNK_OVERLAP,
 ) -> list[Document]:
     """Split each page into smaller chunks and keep the metadata with every chunk."""
     splitter = RecursiveCharacterTextSplitter(

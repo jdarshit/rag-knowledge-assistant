@@ -6,9 +6,10 @@ from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from langchain_huggingface import HuggingFaceEmbeddings
 
+from src.config import EMBEDDING_MODEL
+
 CHROMA_DIR = Path(__file__).resolve().parent.parent / "chroma_db"
 COLLECTION_NAME = "documents"
-EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
 
 @lru_cache(maxsize=1)
@@ -38,7 +39,6 @@ def add_chunks(chunks: list[Document]) -> None:
     get_vector_store().add_documents(chunks, ids=ids)
 
 
-
 def list_documents() -> dict[str, int]:
     """Return {file_name: number_of_chunks} for every document in the store."""
     data = get_vector_store().get(include=["metadatas"])
@@ -54,4 +54,4 @@ def delete_document(source: str) -> int:
     ids = store.get(where={"source": source})["ids"]
     if ids:
         store.delete(ids=ids)
-    return len(ids)    
+    return len(ids)

@@ -3,7 +3,7 @@ from functools import lru_cache
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
 
-LLM_MODEL = "llama3.2:3b"
+from src.config import LLM_MODEL
 
 REWRITE_PROMPT = ChatPromptTemplate.from_template(
     """Rewrite the user's input as a single clear, well-formed question.
