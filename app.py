@@ -5,6 +5,7 @@ from pathlib import Path
 import streamlit as st
 
 from src.ingest import ingest_pdf
+from src.logger import log_feedback, log_query
 from src.rag import LLM_MODEL, MAX_DISTANCE, TOP_K, ask
 from src.vector_store import delete_document, list_documents
 
@@ -101,8 +102,8 @@ if "uploader_key" not in st.session_state:
     st.session_state.uploader_key = 0
 
 
-def render_details(message: dict) -> None:
-    """Show the sources (or a not-found note) and the response time under an answer."""
+def render_details(message: dict, index: int) -> None:
+    """Show sources (or not-found note), response time, and feedback buttons."""
     sources = message.get("sources", [])
     if sources:
         with st.expander(f"Sources ({len(sources)})"):
@@ -122,6 +123,21 @@ def render_details(message: dict) -> None:
         )
     if message.get("seconds") is not None:
         st.caption(f"Answered in {message['seconds']:.0f}s")
+
+    log_id = message.get("log_id")
+    if log_id:
+        if message.get("feedback"):
+            st.caption(f"Feedback recorded: {message['feedback']}")
+        else:
+            col_up, col_down, _ = st.columns([1, 1, 8])
+            if col_up.button("👍", key=f"up_{index}"):
+                log_feedback(log_id, "up")
+                message["feedback"] = "up"
+                st.rerun()
+            if col_down.button("👎", key=f"down_{index}"):
+                log_feedback(log_id, "down")
+                message["feedback"] = "down"
+                st.rerun()
 
 
 documents = list_documents()
@@ -194,12 +210,12 @@ st.write("")
 if not documents:
     st.info("Upload a PDF from the sidebar to get started.")
 
-for message in st.session_state.messages:
+for i, message in enumerate(st.session_state.messages):
     avatar = USER_AVATAR if message["role"] == "user" else BOT_AVATAR
     with st.chat_message(message["role"], avatar=avatar):
         st.write(message["content"])
         if message["role"] == "assistant":
-            render_details(message)
+            render_details(message, i)
 
 question = st.chat_input("Ask a question about your documents", disabled=not documents)
 if question:
@@ -211,14 +227,18 @@ if question:
         start = time.time()
         with st.spinner("Searching documents and generating an answer..."):
             try:
-                history = st.session_state.messages[:-1]  # exclude the question just asked
+                history = st.session_state.messages[:-1]
                 result = ask(question, history=history, k=top_k, max_distance=max_distance)
+                seconds = time.time() - start
+                log_id = log_query(question, result, seconds)
                 answer = {
                     "role": "assistant",
                     "content": result["answer"],
                     "sources": result["sources"],
                     "closest": result.get("closest_distance"),
-                    "seconds": time.time() - start,
+                    "seconds": seconds,
+                    "log_id": log_id,
+                    "feedback": None,
                 }
             except Exception as error:
                 answer = {
@@ -226,5 +246,5 @@ if question:
                     "content": f"Something went wrong: {error}. Is the Ollama app running?",
                 }
         st.write(answer["content"])
-        render_details(answer)
+        render_details(answer, len(st.session_state.messages))
     st.session_state.messages.append(answer)
