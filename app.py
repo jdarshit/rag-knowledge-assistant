@@ -211,7 +211,8 @@ if question:
         start = time.time()
         with st.spinner("Searching documents and generating an answer..."):
             try:
-                result = ask(question, k=top_k, max_distance=max_distance)
+                history = st.session_state.messages[:-1]  # exclude the question just asked
+                result = ask(question, history=history, k=top_k, max_distance=max_distance)
                 answer = {
                     "role": "assistant",
                     "content": result["answer"],

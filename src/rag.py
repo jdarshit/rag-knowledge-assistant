@@ -3,15 +3,15 @@ from functools import lru_cache
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
 
-from src.query_rewriter import rewrite_query
+from src.query_rewriter import condense_question
 from src.reranker import rerank
 from src.vector_store import get_vector_store
 
 LLM_MODEL = "llama3.2:3b"
-TOP_K = 8  # retrieve more, then rerank narrows it down
-RERANK_TOP_N = 4  # how many chunks survive reranking
-MAX_DISTANCE = 0.70  # chunks farther than this are dropped before reranking
-MIN_RERANK_SCORE = 0.0  # chunks scoring below this after reranking are dropped
+TOP_K = 8
+RERANK_TOP_N = 4
+MAX_DISTANCE = 0.70
+MIN_RERANK_SCORE = 0.0
 NOT_FOUND = "I could not find this in the documents."
 
 PROMPT = ChatPromptTemplate.from_template(
@@ -45,8 +45,7 @@ def retrieve(question: str, k: int = TOP_K):
 
 
 def format_context(results) -> str:
-    """Join chunks into one text block, each labelled with its source and page. Works with
-    either (doc, distance) pairs or (doc, distance, rerank_score) triples."""
+    """Join chunks into one text block, each labelled with its source and page."""
     parts = []
     for item in results:
         doc = item[0]
@@ -57,12 +56,14 @@ def format_context(results) -> str:
 
 def ask(
     question: str,
+    history: list[dict] | None = None,
     k: int = TOP_K,
     max_distance: float = MAX_DISTANCE,
     top_n: int = RERANK_TOP_N,
 ) -> dict:
-    """Rewrite the question, retrieve candidates, rerank them, and ask the LLM."""
-    search_query = rewrite_query(question)
+    """Condense the question using chat history, retrieve, rerank, and ask the LLM."""
+    history = history or []
+    search_query = condense_question(question, history)
     candidates = retrieve(search_query, k)
 
     if not candidates:
@@ -94,7 +95,7 @@ def ask(
         }
 
     chain = PROMPT | get_llm()
-    response = chain.invoke({"context": format_context(relevant), "question": question})
+    response = chain.invoke({"context": format_context(relevant), "question": search_query})
 
     sources = [
         {
